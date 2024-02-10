@@ -18,8 +18,7 @@ public class MainWindowViewModel : INotifyPropertyChanged {
     }
 
     public MainWindowViewModel() {
-        CurrentPage = Activator.CreateInstance<Views.MainMenu>();
-        logger.Fatal("SOMETHING");
+        CurrentPage = Activator.CreateInstance<MainMenu>();
     }
 
     public event PropertyChangedEventHandler PropertyChanged;

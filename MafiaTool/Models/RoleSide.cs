@@ -1,6 +1,6 @@
 ﻿namespace MafiaTool.Models; 
 
-public enum RoleGeneralFraction {
+public enum RoleSide {
     Red,
     Black
 }

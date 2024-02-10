@@ -5,8 +5,8 @@
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
              xmlns:viewModels="clr-namespace:MafiaTool.ViewModels"
              mc:Ignorable="d"
-             d:DesignHeight="400" d:DesignWidth="400">
-    
+             d:DesignHeight="700" d:DesignWidth="600">
+
     <UserControl.DataContext>
         <viewModels:MainMenuVM/>
     </UserControl.DataContext>
@@ -14,12 +14,212 @@
     <UserControl.Resources>
         <ResourceDictionary>
             <ResourceDictionary.MergedDictionaries>
-                <ResourceDictionary Source="/Assets/BaseStyle.xaml" />
+                <ResourceDictionary Source="/Assets/BaseStyle.xaml"/>
             </ResourceDictionary.MergedDictionaries>
         </ResourceDictionary>
     </UserControl.Resources>
 
-    <Grid HorizontalAlignment="Stretch" VerticalAlignment="Stretch">
+    <Grid HorizontalAlignment="Stretch" VerticalAlignment="Stretch"
+          ShowGridLines="False">
+        <Grid.RowDefinitions>
+            <RowDefinition Height="*"/>
+            <RowDefinition Height="*"/>
+            <RowDefinition Height="0.5*"/>
+            <RowDefinition Height="*"/>
+            <RowDefinition Height="*"/>
+            <RowDefinition Height="0.5*"/>
+            <RowDefinition Height="0.5*"/>
+            <RowDefinition Height="2*"/>
+            <RowDefinition Height="2*"/>
+        </Grid.RowDefinitions>
+        <Grid.ColumnDefinitions>
+            <ColumnDefinition Width="2*"/>
+            <ColumnDefinition Width="*"/>
+            <ColumnDefinition Width="*"/>
+            <ColumnDefinition Width="2*"/>
+        </Grid.ColumnDefinitions>
+
+        <TextBlock Grid.Row="0" Grid.Column="0"
+                   Grid.RowSpan="3" Grid.ColumnSpan="2"
+                   VerticalAlignment="Top"
+                   Text="Роли:"
+                   FontSize="15"
+                   Margin="10 0 0 0"/>
+
+        <ScrollViewer Grid.Row="0" Grid.Column="0"
+                      Grid.RowSpan="2" Grid.ColumnSpan="2"
+                      VerticalScrollBarVisibility="Auto"
+                      HorizontalScrollBarVisibility="Auto"
+                      Margin="10 20 10 0">
+            <ListBox Background="Azure"
+                     ItemsSource="{Binding RoleVariations}"
+                     SelectionMode="Single"
+                     SelectedItem="{Binding SelectedRole}">
+                <ListBox.ItemTemplate>
+                    <DataTemplate>
+                        <StackPanel Orientation="Horizontal">
+                            <TextBlock Style="{StaticResource RoleTextBlock}"
+                                       Text="{Binding}"/>
+                        </StackPanel>
+                    </DataTemplate>
+                </ListBox.ItemTemplate>
+            </ListBox>
+        </ScrollViewer>
         
+        <Button Grid.Row="2" Grid.Column="0"
+                Grid.ColumnSpan="2"
+                Margin="10 0"
+                FontSize="15">
+            <TextBlock FontSize="15"
+                       Text="Добавить"
+                       TextAlignment="Center"
+                       TextWrapping="Wrap"/>
+        </Button>
+
+        <TextBlock Grid.Row="3" Grid.Column="0"
+                   Grid.RowSpan="3" Grid.ColumnSpan="2"
+                   VerticalAlignment="Top"
+                   Text="Выбранные роли:"
+                   FontSize="15"
+                   Margin="10 0 0 0"/>
+
+        <ScrollViewer Grid.Row="3" Grid.Column="0"
+                      Grid.RowSpan="2" Grid.ColumnSpan="2"
+                      VerticalScrollBarVisibility="Auto"
+                      HorizontalScrollBarVisibility="Auto"
+                      Margin="10 20 10 0">
+            <ListBox Background="Azure"
+                     ItemsSource="{Binding PlayersRoleCounts}"
+                     SelectionMode="Single"
+                     SelectedItem="{Binding SelectedRole}">
+                <ListBox.ItemTemplate>
+                    <DataTemplate>
+                        <StackPanel Orientation="Horizontal">
+                            <TextBlock Style="{StaticResource RoleTextBlock}"
+                                       Text="{Binding Key.Name}"/>
+                            <Separator Width="5" Visibility="Hidden"/>
+                            <Separator Width="5" FontSize="15"
+                                       Background="Black"
+                                       Margin="0 1 0 -1"/>
+                            <Separator Width="5" Visibility="Hidden"/>
+                            <TextBlock Style="{StaticResource RoleTextBlock}"
+                                       Text="{Binding Value}"/>
+                        </StackPanel>
+                    </DataTemplate>
+                </ListBox.ItemTemplate>
+            </ListBox>
+        </ScrollViewer>
+        
+        <Button Grid.Row="5" Grid.Column="0"
+                Grid.ColumnSpan="2"
+                Margin="10 0"
+                FontSize="15">
+            <TextBlock FontSize="15"
+                       Text="Удалить"
+                       TextAlignment="Center"
+                       TextWrapping="Wrap"/>
+        </Button>
+
+        <Button Grid.Row="6" Grid.Column="0"
+                Grid.ColumnSpan="2"
+                Margin="10 0"
+                FontSize="15">
+            <TextBlock FontSize="15"
+                       Text="Сгенерировать роли"
+                       TextAlignment="Center"
+                       TextWrapping="Wrap"/>
+        </Button>
+
+        <TextBlock Grid.Row="0"
+                   Grid.Column="2"
+                   Grid.RowSpan="2"
+                   Grid.ColumnSpan="2"
+                   VerticalAlignment="Top"
+                   Text="Описание роли:"
+                   FontSize="15"
+                   Margin="10 0 0 0"/>
+
+        <TextBox Grid.Row="0"
+                 Grid.Column="2"
+                 Grid.RowSpan="3"
+                 Grid.ColumnSpan="2"
+                 Margin="10 20 10 0"
+                 IsEnabled="False"
+                 Text="{Binding SelectedRole.Description}"/>
+
+        <TextBlock Grid.Row="3"
+                   Grid.Column="2" Grid.ColumnSpan="2"
+                   VerticalAlignment="Top"
+                   Text="Способности:"
+                   FontSize="15"
+                   Margin="10 0 0 0"/>
+
+        <Border Grid.Row="3" Grid.RowSpan="3"
+                Grid.Column="2" Grid.ColumnSpan="2"
+                BorderBrush="LightGray"
+                BorderThickness="1"
+                Margin="10 20 10 0">
+            <ScrollViewer
+                VerticalScrollBarVisibility="Auto"
+                HorizontalScrollBarVisibility="Disabled">
+                <ItemsControl VerticalAlignment="Stretch"
+                              HorizontalAlignment="Stretch"
+                              ItemsSource="{Binding SelectedRole.Abilities}">
+                    <ItemsControl.ItemTemplate>
+                        <DataTemplate>
+                            <StackPanel Orientation="Horizontal">
+                                <TextBlock Style="{StaticResource RoleTextBlock}"
+                                           Text="{Binding}">
+                                    <TextBlock.ToolTip>
+                                        <ToolTip Content="{Binding Description}"/>
+                                    </TextBlock.ToolTip>
+                                </TextBlock>
+                            </StackPanel>
+                        </DataTemplate>
+                    </ItemsControl.ItemTemplate>
+                </ItemsControl>
+            </ScrollViewer>
+        </Border>
+
+        <Border Grid.Column="0" Grid.ColumnSpan="2"
+                Grid.Row="7" Grid.RowSpan="2"
+                BorderBrush="LightGray"
+                BorderThickness="1"
+                Margin="10">
+            <ScrollViewer VerticalScrollBarVisibility="Auto"
+                          HorizontalScrollBarVisibility="Auto">
+                <ItemsControl VerticalAlignment="Stretch"
+                              HorizontalAlignment="Stretch"
+                              ItemsSource="{Binding GeneratedPlayers}">
+                    <ItemsControl.ItemTemplate>
+                        <DataTemplate>
+                            <StackPanel Orientation="Horizontal" Margin="5">
+                                <TextBlock Style="{StaticResource RoleTextBlock}"
+                                           Text="{Binding StringFormat={}{0}., Path=Number}"/>
+                                <Separator Width="5" Visibility="Hidden"/>
+                                <TextBox Style="{StaticResource PlayerNameTextBox}"
+                                         MinWidth="50"
+                                         TextAlignment="Left"
+                                         FontSize="15"
+                                         Text="{Binding Name, Mode=TwoWay}"/>
+                                <Separator Width="5" Visibility="Hidden"/>
+                                <TextBlock Style="{StaticResource RoleTextBlock}"
+                                           Text="{Binding StringFormat={}({0}), Path=Role.Name}"/>
+                            </StackPanel>
+                        </DataTemplate>
+                    </ItemsControl.ItemTemplate>
+                </ItemsControl>
+            </ScrollViewer>
+        </Border>
+        
+        <Button Grid.Row="8" Grid.Column="2"
+                Grid.ColumnSpan="2"
+                Margin="10"
+                FontSize="15">
+            <TextBlock FontSize="40"
+                       Text="Начать игру!"
+                       TextAlignment="Center"
+                       TextWrapping="Wrap"/>
+        </Button>
     </Grid>
 </UserControl>

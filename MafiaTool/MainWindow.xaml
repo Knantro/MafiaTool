@@ -5,9 +5,11 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:viewModels="clr-namespace:MafiaTool.ViewModels"
         mc:Ignorable="d"
-        Title="MainWindow" Height="450" Width="450"
-        MinHeight="350"
-        MinWidth="250">
+        Title="MainWindow" Height="700" Width="600"
+        MinHeight="600"
+        MinWidth="500"
+        MaxHeight="800"
+        MaxWidth="800">
     
     <Window.DataContext>
         <viewModels:MainWindowViewModel/>
