@@ -1,5 +1,6 @@
 ﻿using System.Windows;
 using MafiaTool.Logic;
+using MafiaTool.ViewModels;
 using Microsoft.Extensions.DependencyInjection;
 
 namespace MafiaTool;
@@ -19,6 +20,7 @@ public partial class App : Application {
 
     private void ConfigureServices(IServiceCollection services) {
         services.AddTransient(typeof(MainWindow));
-        services.AddSingleton<GameLogic>();
+        services.AddSingleton<MainWindowViewModel>();
+        services.AddSingleton<MafiaLogic>();
     }
 }

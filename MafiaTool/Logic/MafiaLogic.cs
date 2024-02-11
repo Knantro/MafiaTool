@@ -2,12 +2,12 @@
 
 namespace MafiaTool.Logic; 
 
-public class GameLogic {
+public class MafiaLogic {
     public GameNight CurrentNight { get; private set; }
     public List<Player> CurrentPlayers { get; private set; } = new();
     public List<GameNight> GameNightsHistory { get; private set; } = new();
 
-    public GameLogic() {
+    public MafiaLogic() {
         
     }
 

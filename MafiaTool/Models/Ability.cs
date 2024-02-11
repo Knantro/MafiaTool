@@ -1,14 +1,27 @@
-﻿using System.ComponentModel;
-using System.Reflection;
+﻿namespace MafiaTool.Models; 
 
-namespace MafiaTool.Models; 
-
+/// <summary>
+/// Модель способности персонажа
+/// </summary>
 public class Ability {
+    /// <summary>
+    /// Тип способности
+    /// </summary>
     public AbilityType Type { get; set; }
+    
+    /// <summary>
+    /// Название способности
+    /// </summary>
+    public string Name { get; set; }
+    
+    /// <summary>
+    /// Описание способности
+    /// </summary>
     public string Description { get; set; }
 
-    public override string ToString() {
-        var abilityName = Type.GetType().GetField(Type.ToString())?.GetCustomAttribute<DescriptionAttribute>()?.Description;
-        return $" • {abilityName}";
-    }
+    /// <summary>
+    /// Возвращает строковое представление модели для отображения на странице
+    /// </summary>
+    /// <returns>Строковое представление модели</returns>
+    public override string ToString() => $" • {Name}";
 }

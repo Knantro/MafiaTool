@@ -1,19 +1,31 @@
-﻿using System.ComponentModel;
+﻿namespace MafiaTool.Models;
 
-namespace MafiaTool.Models; 
-
+/// <summary>
+/// Тип способности
+/// </summary>
 public enum AbilityType {
-    // [Description("Способность убивать других игроков. Выбранная жертва подвергается убийству и, если жертва никем не будет спасена, на следующее утро не проснётся")]
-    [Description("Убийство")]
+    /// <summary>
+    /// Убийство
+    /// </summary>
     Kill,
-    
-    [Description("Лечение")]
+
+    /// <summary>
+    /// Поиск комиссара
+    /// </summary>
+    CheckCommissar,
+
+    /// <summary>
+    /// Лечение
+    /// </summary>
     Heal,
-    
-    [Description("Поиск чёрного")]
+
+    /// <summary>
+    /// Поиск чёрного
+    /// </summary>
     CheckBlack,
-    
-    // [Description("Способность отменять все эффекты игрока. У выбранного игрока отменяются все эффекты, который были наложены на игрока")]
-    [Description("Полная отмена")]
-    CancelAll
+
+    /// <summary>
+    /// Полная отмена
+    /// </summary>
+    CancelAll,
 }
