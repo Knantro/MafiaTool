@@ -6,7 +6,7 @@ namespace MafiaTool.ViewModels;
 
 public class MainMenuVM : ViewModelBase {
     private static readonly Logger logger = LogManager.GetCurrentClassLogger();
-    private Random rand = new Random();
+    private Random rand = new();
 
     /// <summary>
     /// Список доступных ролей для добавления в игру
@@ -73,6 +73,7 @@ public class MainMenuVM : ViewModelBase {
     public RelayCommand StartGameCommand => new(_ => StartGame());
 
     public MainMenuVM() {
+        logger.SignedDebug("ctor");
         RoleVariations = new ObservableCollection<Role> {
             new() {
                 RoleType = RoleType.Civilian,
@@ -226,6 +227,7 @@ public class MainMenuVM : ViewModelBase {
     public void AddRoleToGenerationList() {
         if (SelectedRole != null) {
             var currentRoleCount = PlayersRoleCounts.FirstOrDefault(x => x.Key.RoleType == SelectedRole.RoleType);
+            logger.SignedDebug($"Adding player with role {SelectedRole.RoleType}. {(currentRoleCount.Key != null ? $"Remaining players with this role count: {PlayersRoleCounts[PlayersRoleCounts.IndexOf(currentRoleCount)].Value + 1}" : "First player with this role")}");
             if (currentRoleCount.Key != null) {
                 if (currentRoleCount.Key.CanBeMultiple) {
                     PlayersRoleCounts[PlayersRoleCounts.IndexOf(currentRoleCount)] =
@@ -249,6 +251,8 @@ public class MainMenuVM : ViewModelBase {
     /// </remarks>
     public void RemoveRoleFromGenerationList() {
         if (SelectedRoleCount.HasValue) {
+            logger.SignedDebug($"Removing player with role {SelectedRoleCount.Value.Key.RoleType}. {(SelectedRoleCount.Value.Value > 1 ? $"Remaining players with this role count: {SelectedRoleCount.Value.Value - 1}" : "No players with this role existing")}");
+            
             var currentRoleCount = PlayersRoleCounts.FirstOrDefault(x => x.Key.RoleType == SelectedRoleCount.Value.Key.RoleType);
             if (currentRoleCount.Key != null) {
                 if (currentRoleCount.Value > 1) {
@@ -268,6 +272,8 @@ public class MainMenuVM : ViewModelBase {
     /// Генерирует игроков согласно списку ролей и их количества
     /// </summary>
     private void GeneratePlayers() {
+        logger.SignedInfo($"Generate {PlayersRoleCounts.Sum(x => x.Value)} players");
+        
         GeneratedPlayers.Clear();
 
         var playersCount = PlayersRoleCounts.Sum(x => x.Value);
@@ -295,6 +301,7 @@ public class MainMenuVM : ViewModelBase {
     /// Начинает игру с текущим набором игроков
     /// </summary>
     private void StartGame() {
+        logger.SignedInfo($"Start game with {GeneratedPlayers.Count} now!");
         // MafiaLogic.SetPlayers(GeneratedPlayers);
         // ChangePage<MafiaGamePage>();
     }
