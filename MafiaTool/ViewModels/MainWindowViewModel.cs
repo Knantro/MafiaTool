@@ -1,7 +1,6 @@
 ﻿using System.ComponentModel;
 using System.Runtime.CompilerServices;
 using System.Windows.Controls;
-using MafiaTool.Views;
 
 namespace MafiaTool.ViewModels; 
 
@@ -19,10 +18,6 @@ public class MainWindowViewModel : INotifyPropertyChanged {
     public UserControl CurrentPage {
         get => currentPage;
         set => SetField(ref currentPage, value);
-    }
-
-    public MainWindowViewModel() {
-        CurrentPage = Activator.CreateInstance<MainMenu>();
     }
 
     #region INPC

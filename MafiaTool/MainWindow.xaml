@@ -12,10 +12,6 @@
         MinWidth="500"
         Icon="/Assets/Images/mafia_icon.ico">
     
-    <Window.DataContext>
-        <viewModels:MainWindowViewModel/>
-    </Window.DataContext>
-    
     <Grid HorizontalAlignment="Stretch" VerticalAlignment="Stretch">
         <ContentControl Content="{Binding CurrentPage}"/>
     </Grid>

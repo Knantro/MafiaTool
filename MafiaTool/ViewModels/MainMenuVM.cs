@@ -227,14 +227,15 @@ public class MainMenuVM : ViewModelBase {
     public void AddRoleToGenerationList() {
         if (SelectedRole != null) {
             var currentRoleCount = PlayersRoleCounts.FirstOrDefault(x => x.Key.RoleType == SelectedRole.RoleType);
-            logger.SignedDebug($"Adding player with role {SelectedRole.RoleType}. {(currentRoleCount.Key != null ? $"Remaining players with this role count: {PlayersRoleCounts[PlayersRoleCounts.IndexOf(currentRoleCount)].Value + 1}" : "First player with this role")}");
             if (currentRoleCount.Key != null) {
                 if (currentRoleCount.Key.CanBeMultiple) {
+                    logger.SignedDebug($"Adding player with role {SelectedRole.RoleType}. Remaining players with this role count: {PlayersRoleCounts[PlayersRoleCounts.IndexOf(currentRoleCount)].Value + 1}");
                     PlayersRoleCounts[PlayersRoleCounts.IndexOf(currentRoleCount)] =
                         new KeyValuePair<Role, int>(currentRoleCount.Key, currentRoleCount.Value + 1);
                 }
             }
             else {
+                logger.SignedDebug($"Adding player with role {SelectedRole.RoleType}. First player with this role");
                 PlayersRoleCounts.Add(new KeyValuePair<Role, int>(SelectedRole, 1));
             }
 
