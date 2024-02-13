@@ -7,7 +7,7 @@ namespace MafiaTool.ViewModels;
 
 public class ViewModelBase : INotifyPropertyChanged {
     private static readonly Logger logger = LogManager.GetCurrentClassLogger();
-    private static readonly MafiaLogic MafiaLogic = App.ServiceProvider.GetService<MafiaLogic>();
+    protected static readonly MafiaLogic MafiaLogic = App.ServiceProvider.GetService<MafiaLogic>();
     private MainWindowViewModel mainWindowViewModel = App.ServiceProvider.GetService<MainWindowViewModel>();
     
     /// <summary>

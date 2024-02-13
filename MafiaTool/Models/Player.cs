@@ -18,9 +18,9 @@ public class Player {
     /// Роль игрока
     /// </summary>
     public Role Role { get; set; }
-    
+
     /// <summary>
     /// Флаг, обозначающий, жив ли игрок
     /// </summary>
-    public bool IsAlive { get; set; }
+    public bool IsAlive { get; set; } = true;
 }

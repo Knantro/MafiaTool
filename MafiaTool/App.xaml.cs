@@ -9,6 +9,8 @@ namespace MafiaTool;
 /// </summary>
 public partial class App : Application {
     private static readonly Logger logger = LogManager.GetCurrentClassLogger();
+    private object locker = new();
+    private bool isFatalOccured;
     
     public static IServiceProvider ServiceProvider { get; private set; }
 
@@ -21,15 +23,30 @@ public partial class App : Application {
     }
 
     private void TaskSchedulerOnUnobservedTaskException(object sender, UnobservedTaskExceptionEventArgs e) {
-        logger.SignedFatal(e.Exception, "Unhandled exception occured! Shutdown an application!");
+        lock (locker) {
+            if (!isFatalOccured) {
+                isFatalOccured = true;
+                logger.SignedFatal(e.Exception, "Unhandled exception occured! Shutdown an application!");
+            }
+        }
     }
 
     private void CurrentDomainOnUnhandledException(object sender, UnhandledExceptionEventArgs e) {
-        logger.SignedFatal((Exception)e.ExceptionObject, "Unhandled exception occured! Shutdown an application!");
+        lock (locker) {
+            if (!isFatalOccured) {
+                isFatalOccured = true;
+                logger.SignedFatal((Exception)e.ExceptionObject, "Unhandled exception occured! Shutdown an application!");
+            }
+        }
     }
 
     private void OnDispatcherUnhandledException(object sender, System.Windows.Threading.DispatcherUnhandledExceptionEventArgs e) {
-        logger.SignedFatal(e.Exception, "Unhandled exception occured! Shutdown an application!");
+        lock (locker) {
+            if (!isFatalOccured) {
+                isFatalOccured = true;
+                logger.SignedFatal(e.Exception, "Unhandled exception occured! Shutdown an application!");
+            }
+        }
     }
     
     protected override void OnStartup(StartupEventArgs e) {

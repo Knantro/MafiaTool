@@ -1,5 +1,6 @@
 ﻿using System.Collections.ObjectModel;
 using MafiaTool.Commands;
+using MafiaTool.Logic;
 using MafiaTool.Models;
 
 namespace MafiaTool.ViewModels;
@@ -35,6 +36,26 @@ public class MainMenuVM : ViewModelBase {
         get => selectedRoleCount;
         set => SetField(ref selectedRoleCount, value);
     }
+    
+    private bool datingNightIsActivated;
+    
+    /// <summary>
+    /// Включена ли ночь знакомства в предстоящей игре
+    /// </summary>
+    public bool DatingNightIsActivated {
+        get => datingNightIsActivated;
+        set => SetField(ref datingNightIsActivated, value);
+    }
+
+    /// <summary>
+    /// Существует ли последняя сыгранная партия в "Мафию"
+    /// </summary>
+    public bool HasLastGame => MafiaLogic.LastGamePlayers.Count != 0;
+
+    /// <summary>
+    /// Можно ли начать игру
+    /// </summary>
+    public bool CanStartGame => GeneratedPlayers != null && GeneratedPlayers.Count != 0;
 
     /// <summary>
     /// Набор ролей с их количеством, включённые в игру
@@ -68,153 +89,18 @@ public class MainMenuVM : ViewModelBase {
     public RelayCommand RemoveRoleFromGenerationCommand => new(_ => RemoveRoleFromGenerationList());
     
     /// <summary>
+    /// Команда восстановления игроков последней партии игры
+    /// </summary>
+    public RelayCommand RestorePlayersCommand => new(_ => RestorePlayers());
+    
+    /// <summary>
     /// Команда начала игры
     /// </summary>
     public RelayCommand StartGameCommand => new(_ => StartGame());
 
     public MainMenuVM() {
         logger.SignedDebug("ctor");
-        RoleVariations = new ObservableCollection<Role> {
-            new() {
-                RoleType = RoleType.Civilian,
-                Priority = 0,
-                Name = "Мирный житель",
-                CasedNames = new Dictionary<Case, string> {
-                    { Case.Nominative, "мирный житель" },
-                    { Case.Genitive, "мирного жителя" },
-                    { Case.Dative, "мирному жителю" },
-                    { Case.Accusative, "мирного жителя" },
-                    { Case.Instrumental, "мирным жителем" },
-                    { Case.Prepositional, "о мирном жителе" }
-                },
-                Side = RoleSide.Red,
-                CanBeMultiple = true,
-                Description = "Мирные жители являются обычными игроками, которые не имеют никаких способностей. Они просто спят ночью и голосуют днём наряду с остальными игроками",
-                Abilities = null
-            },
-            new() {
-                RoleType = RoleType.Mafia,
-                Priority = 1,
-                Name = "Мафия",
-                CasedNames = new Dictionary<Case, string> {
-                    { Case.Nominative, "мафия" },
-                    { Case.Genitive, "мафии" },
-                    { Case.Dative, "мафии" },
-                    { Case.Accusative, "мафию" },
-                    { Case.Instrumental, "мафией" },
-                    { Case.Prepositional, "о мафии" }
-                },
-                Side = RoleSide.Black,
-                CanBeMultiple = true,
-                Description = "Мафия имеет лишь одну цель - убивать. Их задача - убить всех красных (мирных и их друзей) игроков. Мафия коварна, хитра и очень опасна. Они ни перед чем не остановятся ради достижения своих целей",
-                Abilities = new List<Ability> {
-                    new() {
-                        Type = AbilityType.Kill,
-                        Name = "Убийство",
-                        Description = "Способность убивать других игроков. Выбранная жертва подвергается убийству и, если жертва никем не будет спасена, на следующее утро не проснётся"
-                    }
-                }
-            },
-            new() {
-                RoleType = RoleType.MafiaDon,
-                Priority = 2,
-                Name = "Дон мафии",
-                CasedNames = new Dictionary<Case, string> {
-                    { Case.Nominative, "дон мафии" },
-                    { Case.Genitive, "дона мафии" },
-                    { Case.Dative, "дону мафии" },
-                    { Case.Accusative, "дона мафии" },
-                    { Case.Instrumental, "доном мафии" },
-                    { Case.Prepositional, "о доне мафии" }
-                },
-                Side = RoleSide.Black,
-                CanBeMultiple = false,
-                Description = "Дон мафии поумнее обычной мафии, на то он и дон, чтобы командовать мафией. Дон указывает мафии, кого нужно убить и параллельно с этим пытается найти потенциального врага всей мафиозной шайки - комиссара",
-                Abilities = new List<Ability> {
-                    new() {
-                        Type = AbilityType.Kill,
-                        Name = "Убийство",
-                        Description = "Способность убивать других игроков. Выбранная жертва подвергается убийству и, если жертва никем не будет спасена, на следующее утро не проснётся"
-                    },
-                    new() {
-                        Type = AbilityType.CheckCommissar,
-                        Name = "Поиск комиссара",
-                        Description = "Способность искать среди игроков комиссара. Выбранная жертва подвергается убийству и, если жертва никем не будет спасена, на следующее утро не проснётся"
-                    }
-                }
-            },
-            new() {
-                RoleType = RoleType.Doctor,
-                Priority = 3,
-                Name = "Доктор",
-                CasedNames = new Dictionary<Case, string> {
-                    { Case.Nominative, "доктор" },
-                    { Case.Genitive, "доктора" },
-                    { Case.Dative, "доктору" },
-                    { Case.Accusative, "доктора" },
-                    { Case.Instrumental, "доктором" },
-                    { Case.Prepositional, "о докторе" }
-                },
-                Side = RoleSide.Red,
-                CanBeMultiple = false,
-                Description = "Доктор является своеобразным ангелом-хранителем, отчаянно пытающийся спасти потенциальных жертв от их убийства мафией. Он в какой-то степени является альтруистом, ведь себя он может лечить лишь однажды...",
-                Abilities = new List<Ability> {
-                    new() {
-                        Type = AbilityType.Heal,
-                        Name = "Лечение",
-                        Description = "Способность лечить других игроков. Выбранный игрок будет вылечен и спасён от убийства чёрными игроками. За игру можно лечить себя лишь один раз. Два раза подряд никого лечить нельзя"
-                    }
-                }
-            },
-            new() {
-                RoleType = RoleType.Commissar,
-                Priority = 4,
-                Name = "Комиссар",
-                CasedNames = new Dictionary<Case, string> {
-                    { Case.Nominative, "комиссар" },
-                    { Case.Genitive, "комиссара" },
-                    { Case.Dative, "комиссару" },
-                    { Case.Accusative, "комиссара" },
-                    { Case.Instrumental, "комиссаром" },
-                    { Case.Prepositional, "о комиссаре" }
-                },
-                Side = RoleSide.Red,
-                CanBeMultiple = false,
-                Description = "Комиссар является грозой всех чёрных игроков (мафии и других). Его боятся все нечистые игроки, а для дона мафии является главной целью для устранения. Особый любимец среди мирных жителей",
-                Abilities = new List<Ability> {
-                    new() {
-                        Type = AbilityType.CheckBlack,
-                        Name = "Поиск чёрного",
-                        Description = "Способность проверять других игроков на принадлежность \"чёрной\" фракции. Выбранный игрок проверяется, является ли он \"чёрным\" игроком (например, мафией или маньяком) или нет. О результатах проверки сообщается после ночи обезличено, чтобы личность игрока знал лишь игрок с данной способностью"
-                    }
-                }
-            },
-            new() {
-                RoleType = RoleType.Prostitute,
-                Priority = 5,
-                Name = "Проститутка",
-                CasedNames = new Dictionary<Case, string> {
-                    { Case.Nominative, "проститутка" },
-                    { Case.Genitive, "проститутки" },
-                    { Case.Dative, "проститутке" },
-                    { Case.Accusative, "проститутку" },
-                    { Case.Instrumental, "проституткой" },
-                    { Case.Prepositional, "о проститутке" }
-                },
-                Side = RoleSide.Red,
-                CanBeMultiple = false,
-                Description = "Проститутка хоть и является сторонником мирных жителей, но сама может поневоле спасти чёрных от проверки их комиссаром или не позволить доктору вылечить потенциальную жертву. Проститутка может перевернуть всю игру верх дном",
-                Abilities = new List<Ability> {
-                    new() {
-                        Type = AbilityType.CancelAll,
-                        Name = "Полная отмена",
-                        Description = "Способность отменять все эффекты. Выбранный игрок теряет все эффекты, накладываемые данным игроком и эффекты, наложенные на этого игрока. Два раза подряд одного и того же игрока выбирать нельзя"
-                    }
-                }
-            },
-        };
-
-        // DataStorage.SaveData(RoleVariations, DataPaths.ROLES_FILENAME);
+        RoleVariations = new ObservableCollection<Role>(MafiaLogic.Roles.OrderBy(x => x.Priority));
     }
 
     /// <summary>
@@ -276,6 +162,7 @@ public class MainMenuVM : ViewModelBase {
         logger.SignedInfo($"Generate {PlayersRoleCounts.Sum(x => x.Value)} players");
         
         GeneratedPlayers.Clear();
+        OnPropertyChanged(nameof(CanStartGame));
 
         var playersCount = PlayersRoleCounts.Sum(x => x.Value);
         var dictionaryPlayersRoleCounts = PlayersRoleCounts.ToDictionary(k => k.Key, v => v.Value);
@@ -296,13 +183,37 @@ public class MainMenuVM : ViewModelBase {
                 Role = role
             });
         }
+        
+        OnPropertyChanged(nameof(CanStartGame));
+    }
+    
+    /// <summary>
+    /// Восстанавливает игроков (с перемешиванием ролей) из предыдущей партии игры для игры с теми же игроками в новой партии
+    /// </summary>
+    private void RestorePlayers() {
+        logger.SignedDebug("Restoring players from the last game");
+
+        GeneratedPlayers = new ObservableCollection<Player>(MafiaLogic.LastGamePlayers);
+        OnPropertyChanged(nameof(GeneratedPlayers));
+
+        var roles = GeneratedPlayers.Select(x => x.Role).ToList();
+        roles.Shuffle();
+
+        for (var i = 0; i < GeneratedPlayers.Count; i++) {
+            GeneratedPlayers[i].Role = roles[i];
+        }
+        
+        OnPropertyChanged(nameof(CanStartGame));
+        
+        logger.SignedDebug($"Restored {GeneratedPlayers.Count} players");
     }
     
     /// <summary>
     /// Начинает игру с текущим набором игроков
     /// </summary>
     private void StartGame() {
-        logger.SignedInfo($"Start game with {GeneratedPlayers.Count} now!");
+        logger.SignedInfo($"Start game with {GeneratedPlayers.Count} players now!");
+        DataStorage.SaveData(GeneratedPlayers, DataPaths.GetFullPath(DataPaths.LAST_GAME_PLAYERS_FILENAME));
         // MafiaLogic.SetPlayers(GeneratedPlayers);
         // ChangePage<MafiaGamePage>();
     }

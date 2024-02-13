@@ -162,7 +162,7 @@
                    Text="Способности:"
                    Margin="10 0 0 0"/>
 
-        <Border Grid.Row="3" Grid.RowSpan="3"
+        <Border Grid.Row="3" Grid.RowSpan="4"
                 Grid.Column="2" Grid.ColumnSpan="2"
                 BorderBrush="LightGray"
                 BorderThickness="1"
@@ -220,10 +220,38 @@
                 </ItemsControl>
             </ScrollViewer>
         </Border>
+        
+        <CheckBox Grid.Row="7" Grid.Column="2"
+                  Grid.ColumnSpan="2"
+                  Margin="10 10 0 0"
+                  VerticalContentAlignment="Center"
+                  VerticalAlignment="Top"
+                  IsChecked="{Binding DatingNightIsActivated}">
+            <CheckBox.LayoutTransform>
+                <ScaleTransform ScaleX="1.2"
+                                ScaleY="1.2"/>
+            </CheckBox.LayoutTransform>
+            <TextBlock Style="{StaticResource DefaultTextBlock}"
+                       Text="Включить ночь знакомства"
+                       VerticalAlignment="Center"/>
+        </CheckBox>
+
+        <Button Grid.Row="7" Grid.Column="2"
+                Grid.ColumnSpan="2"
+                Margin="10 50 10 10"
+                IsEnabled="{Binding HasLastGame}"
+                Command="{Binding RestorePlayersCommand}">
+            <TextBlock FontSize="25"
+                       Text="Восстановить игроков предыдущей игры"
+                       TextAlignment="Center"
+                       TextWrapping="Wrap"/>
+        </Button>
 
         <Button Grid.Row="8" Grid.Column="2"
                 Grid.ColumnSpan="2"
-                Margin="10">
+                Margin="10"
+                IsEnabled="{Binding CanStartGame}"
+                Command="{Binding StartGameCommand}">
             <TextBlock FontSize="35"
                        Text="Начать игру!"
                        TextAlignment="Center"
