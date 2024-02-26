@@ -5,6 +5,11 @@
         <Setter Property="TextWrapping" Value="Wrap"/>
     </Style>
     
+    <Style x:Key="DefaultTextBox" TargetType="{x:Type TextBox}">
+        <Setter Property="FontSize" Value="15"/>
+        <Setter Property="TextWrapping" Value="Wrap"/>
+    </Style>
+    
     <Style x:Key="NonListBoxTextBlock" TargetType="{x:Type TextBlock}" BasedOn="{StaticResource DefaultTextBlock}">
         <Setter Property="Padding" Value="5 0"/>
     </Style>

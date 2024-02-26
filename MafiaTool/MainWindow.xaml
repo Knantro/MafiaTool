@@ -6,11 +6,15 @@
         xmlns:viewModels="clr-namespace:MafiaTool.ViewModels"
         mc:Ignorable="d"
         Title="Mafia Tool" 
-        Height="700" 
+        Height="800" 
         Width="600"
         MinHeight="600"
         MinWidth="500"
         Icon="/Assets/Images/mafia_icon.ico">
+    
+    <Window.DataContext>
+        <viewModels:MainWindowViewModel/>
+    </Window.DataContext>
     
     <Grid HorizontalAlignment="Stretch" VerticalAlignment="Stretch">
         <ContentControl Content="{Binding CurrentPage}"/>

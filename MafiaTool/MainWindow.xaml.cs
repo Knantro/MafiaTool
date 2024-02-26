@@ -9,8 +9,6 @@ namespace MafiaTool;
 /// </summary>
 public partial class MainWindow : Window {
     public MainWindow() {
-        DataContext = App.ServiceProvider.GetService<MainWindowViewModel>();
-
         InitializeComponent();
 
         ((MainWindowViewModel)DataContext).CurrentPage = Activator.CreateInstance<MainMenu>();

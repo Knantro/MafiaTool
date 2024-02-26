@@ -63,6 +63,16 @@ public class MainMenuVM : ViewModelBase {
     public ObservableCollection<KeyValuePair<Role, int>> PlayersRoleCounts { get; set; } = new();
 
     /// <summary>
+    /// Общее количество игроков в игре
+    /// </summary>
+    public int PlayersCount => PlayersRoleCounts.Sum(x => x.Value);
+
+    /// <summary>
+    /// Есть ли включённые в игру игроки
+    /// </summary>
+    public bool HasPlayers => PlayersCount > 0;
+
+    /// <summary>
     /// Сгенерированные игроки по ролям
     /// </summary>
     public ObservableCollection<Player> GeneratedPlayers { get; set; } = new();
@@ -87,6 +97,11 @@ public class MainMenuVM : ViewModelBase {
     /// Команда удаления роли из игры
     /// </summary>
     public RelayCommand RemoveRoleFromGenerationCommand => new(_ => RemoveRoleFromGenerationList());
+    
+    /// <summary>
+    /// Команда очистки всех ролей из списка
+    /// </summary>
+    public RelayCommand ClearPlayersListCommand => new(_ => ClearPlayers());
     
     /// <summary>
     /// Команда восстановления игроков последней партии игры
@@ -125,6 +140,8 @@ public class MainMenuVM : ViewModelBase {
                 PlayersRoleCounts.Add(new KeyValuePair<Role, int>(SelectedRole, 1));
             }
 
+            OnPropertyChanged(nameof(PlayersCount));
+            OnPropertyChanged(nameof(HasPlayers));
             OnPropertyChanged(nameof(AddingRoleAvailable));
         }
     }
@@ -151,37 +168,39 @@ public class MainMenuVM : ViewModelBase {
                 }
             }
 
+            OnPropertyChanged(nameof(PlayersCount));
+            OnPropertyChanged(nameof(HasPlayers));
             OnPropertyChanged(nameof(AddingRoleAvailable));
         }
+    }
+
+    /// <summary>
+    /// Удаляет все роли из списка ролей для генерации
+    /// </summary>
+    public void ClearPlayers() {
+        PlayersRoleCounts.Clear();
+        
+        OnPropertyChanged(nameof(PlayersCount));
+        OnPropertyChanged(nameof(HasPlayers));
     }
 
     /// <summary>
     /// Генерирует игроков согласно списку ролей и их количества
     /// </summary>
     private void GeneratePlayers() {
-        logger.SignedInfo($"Generate {PlayersRoleCounts.Sum(x => x.Value)} players");
+        logger.SignedInfo($"Generate {PlayersCount} players");
         
         GeneratedPlayers.Clear();
         OnPropertyChanged(nameof(CanStartGame));
 
-        var playersCount = PlayersRoleCounts.Sum(x => x.Value);
-        var dictionaryPlayersRoleCounts = PlayersRoleCounts.ToDictionary(k => k.Key, v => v.Value);
-        for (var i = 1; i <= playersCount; i++) {
-            var roleTypesCount = dictionaryPlayersRoleCounts.Count;
-            var roleCount = dictionaryPlayersRoleCounts.ElementAt(rand.Next() % roleTypesCount);
-            var role = roleCount.Key;
+        PlayersRoleCounts.SelectMany(x => Enumerable.Repeat(x.Key, x.Value))
+                         .Select(x => new Player { Role = x })
+                         .Shuffle()
+                         .ToList()
+                         .ForEach(x => GeneratedPlayers.Add(x));
 
-            if (roleCount.Value == 1) {
-                dictionaryPlayersRoleCounts.Remove(role);
-            }
-            else {
-                dictionaryPlayersRoleCounts[role]--;
-            }
-
-            GeneratedPlayers.Add(new Player {
-                Number = i,
-                Role = role
-            });
+        for (var i = 0; i < GeneratedPlayers.Count; i++) {
+            GeneratedPlayers[i].Number = i + 1;
         }
         
         OnPropertyChanged(nameof(CanStartGame));
@@ -196,8 +215,7 @@ public class MainMenuVM : ViewModelBase {
         GeneratedPlayers = new ObservableCollection<Player>(MafiaLogic.LastGamePlayers);
         OnPropertyChanged(nameof(GeneratedPlayers));
 
-        var roles = GeneratedPlayers.Select(x => x.Role).ToList();
-        roles.Shuffle();
+        var roles = GeneratedPlayers.Select(x => x.Role).Shuffle().ToList();
 
         for (var i = 0; i < GeneratedPlayers.Count; i++) {
             GeneratedPlayers[i].Role = roles[i];
