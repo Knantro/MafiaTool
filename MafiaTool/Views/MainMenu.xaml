@@ -41,13 +41,25 @@
             <ColumnDefinition Width="*"/>
             <ColumnDefinition Width="2*"/>
         </Grid.ColumnDefinitions>
-        
+
         <Menu Grid.Row="0" Grid.Column="0"
               Grid.ColumnSpan="4"
               VerticalAlignment="Top"
-              FontSize="15"
-              Background="White">
-            <MenuItem Header="Вид"></MenuItem>
+              BorderThickness="0 0 0 1"
+              BorderBrush="Black"
+              FontSize="15">
+            <MenuItem Header="Окно ролей">
+                <MenuItem Header="Группировать по:">
+                    <MenuItem Header="Приоритету" IsCheckable="True"/>
+                    <MenuItem Header="Фракции" IsCheckable="True"/>
+                </MenuItem>
+            </MenuItem>
+            <MenuItem Header="Вид">
+                <MenuItem Header="Группировать по:">
+                    <MenuItem Header="Приоритету" IsCheckable="True"/>
+                    <MenuItem Header="Фракции" IsCheckable="True"/>
+                </MenuItem>
+            </MenuItem>
         </Menu>
 
         <TextBlock Grid.Row="1" Grid.Column="0"
@@ -180,25 +192,27 @@
                 Margin="10 20 10 0"
                 BorderBrush="LightGray"
                 BorderThickness="1">
-            <TextBlock Text="{Binding SelectedRole.Description}"
-                       Style="{StaticResource NonListBoxTextBlock}"/>
+            <ScrollViewer VerticalScrollBarVisibility="Auto"
+                          HorizontalScrollBarVisibility="Disabled">
+                <TextBlock Text="{Binding SelectedRole.Description}"
+                           Style="{StaticResource NonListBoxTextBlock}"/>
+            </ScrollViewer>
         </Border>
 
-        <TextBlock Grid.Row="4"
+        <TextBlock Grid.Row="5"
                    Grid.Column="2" Grid.ColumnSpan="2"
                    Style="{StaticResource DefaultTextBlock}"
                    VerticalAlignment="Top"
                    Text="Способности:"
                    Margin="10 0 0 0"/>
 
-        <Border Grid.Row="4" Grid.RowSpan="6"
+        <Border Grid.Row="5" Grid.RowSpan="5"
                 Grid.Column="2" Grid.ColumnSpan="2"
                 BorderBrush="LightGray"
                 BorderThickness="1"
                 Margin="10 20 10 0">
-            <ScrollViewer
-                VerticalScrollBarVisibility="Auto"
-                HorizontalScrollBarVisibility="Disabled">
+            <ScrollViewer VerticalScrollBarVisibility="Auto"
+                          HorizontalScrollBarVisibility="Disabled">
                 <ItemsControl VerticalAlignment="Stretch"
                               HorizontalAlignment="Stretch"
                               ItemsSource="{Binding SelectedRole.Abilities}">

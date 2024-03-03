@@ -8,6 +8,11 @@ public enum AbilityType {
     /// Убийство
     /// </summary>
     Kill,
+    
+    /// <summary>
+    /// Единственное убийство (одно за игру)
+    /// </summary>
+    SingleKill,
 
     /// <summary>
     /// Поиск комиссара
