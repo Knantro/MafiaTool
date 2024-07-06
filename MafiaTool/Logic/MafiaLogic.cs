@@ -28,8 +28,18 @@ public class MafiaLogic {
     /// </summary>
     public List<GameNight> GameNightsHistory { get; private set; } = new();
 
+    public List<RoleStatistic> RoleStatistics { get; private set; } = new();
+
     public MafiaLogic() {
         RestoreAllData();
+    }
+
+    /// <summary>
+    /// 
+    /// </summary>
+    /// <returns></returns>
+    public List<Player> WeightedRandom(Dictionary<RoleType, int> ) {
+        
     }
 
     /// <summary>
